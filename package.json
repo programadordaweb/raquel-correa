@@ -1,0 +1,13 @@
+{
+  "name": "raquel-correa-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site da Raquel Corrêa Psicóloga, com agendamento e painel admin locais.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cookie-parser": "^1.4.6"
+  }
+}
