@@ -1,5 +1,6 @@
-// Simple local JSON-file "database" for appointments.
-// Fine for a single-practitioner booking volume — no external service needed.
+// Local JSON-file "database" — used when running locally or on a host with
+// a persistent filesystem (e.g. Render, Railway). NOT used on Vercel, which
+// has no writable/persistent disk (see store.vercel.js for that case).
 
 const fs = require('fs');
 const path = require('path');
@@ -17,22 +18,19 @@ function persist() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(appointments, null, 2), 'utf8');
 }
 
-function getAll() {
+async function getAll() {
   return appointments;
 }
 
-function getSlotsForDate(apptDate) {
+async function getSlotsForDate(apptDate) {
   return appointments
     .filter((a) => a.apptDate === apptDate)
     .map((a) => a.apptTime);
 }
 
-function isSlotTaken(apptDate, apptTime) {
-  return appointments.some((a) => a.apptDate === apptDate && a.apptTime === apptTime);
-}
-
-function create({ name, phone, email, notes, apptDate, apptTime }) {
-  if (isSlotTaken(apptDate, apptTime)) {
+async function create({ name, phone, email, notes, apptDate, apptTime }) {
+  const taken = appointments.some((a) => a.apptDate === apptDate && a.apptTime === apptTime);
+  if (taken) {
     const err = new Error('slot_taken');
     err.code = 'SLOT_TAKEN';
     throw err;
@@ -53,7 +51,7 @@ function create({ name, phone, email, notes, apptDate, apptTime }) {
   return appt;
 }
 
-function updateStatus(id, status) {
+async function updateStatus(id, status) {
   const appt = appointments.find((a) => a.id === id);
   if (!appt) return null;
   appt.status = status;
@@ -61,4 +59,4 @@ function updateStatus(id, status) {
   return appt;
 }
 
-module.exports = { getAll, getSlotsForDate, isSlotTaken, create, updateStatus };
+module.exports = { getAll, getSlotsForDate, create, updateStatus };

@@ -11,7 +11,8 @@ const liveDot = document.getElementById('liveDot');
 
 let appointments = [];
 let currentFilter = 'upcoming';
-let sse = null;
+let pollTimer = null;
+const POLL_INTERVAL_MS = 5000;
 
 /* ---------- Auth ---------- */
 async function checkSession() {
@@ -31,7 +32,7 @@ async function checkSession() {
 function showLogin() {
   loginScreen.hidden = false;
   dashboard.hidden = true;
-  if (sse) { sse.close(); sse = null; }
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
   liveDot.classList.remove('is-live');
 }
 
@@ -39,7 +40,7 @@ function showDashboard() {
   loginScreen.hidden = true;
   dashboard.hidden = false;
   loadAppointments();
-  connectStream();
+  startPolling();
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -79,38 +80,31 @@ logoutBtn.addEventListener('click', async () => {
   showLogin();
 });
 
-/* ---------- Data ---------- */
+/* ---------- Data ----------
+   No persistent push connection (Vercel's serverless functions don't keep
+   a connection alive between requests), so the dashboard polls instead —
+   still "updates on its own", just every few seconds rather than instantly. */
 async function loadAppointments() {
   try {
     const res = await fetch('/api/admin/appointments');
     if (res.status === 401) { showLogin(); return; }
-    appointments = await res.json();
-    render();
+    if (!res.ok) throw new Error('bad_response');
+    const fresh = await res.json();
+
+    const previousIds = new Set(appointments.map((a) => a.id));
+    const newlyArrived = fresh.find((a) => !previousIds.has(a.id));
+
+    appointments = fresh;
+    liveDot.classList.add('is-live');
+    render(newlyArrived ? newlyArrived.id : undefined);
   } catch (err) {
-    /* SSE reconnect / next manual refresh will recover */
+    liveDot.classList.remove('is-live');
   }
 }
 
-function connectStream() {
-  if (sse) return;
-  sse = new EventSource('/api/admin/stream');
-
-  sse.addEventListener('open', () => liveDot.classList.add('is-live'));
-  sse.addEventListener('error', () => liveDot.classList.remove('is-live'));
-
-  sse.addEventListener('appointment:created', (e) => {
-    const appt = JSON.parse(e.data);
-    appointments.push(appt);
-    appointments.sort((a, b) => (a.apptDate + a.apptTime).localeCompare(b.apptDate + b.apptTime));
-    render(appt.id);
-  });
-
-  sse.addEventListener('appointment:updated', (e) => {
-    const appt = JSON.parse(e.data);
-    const idx = appointments.findIndex((a) => a.id === appt.id);
-    if (idx !== -1) appointments[idx] = appt;
-    render();
-  });
+function startPolling() {
+  if (pollTimer) return;
+  pollTimer = setInterval(loadAppointments, POLL_INTERVAL_MS);
 }
 
 /* ---------- Render ---------- */

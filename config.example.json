@@ -1,3 +1,4 @@
 {
-  "adminPassword": "troque-esta-senha"
+  "adminPassword": "troque-esta-senha",
+  "sessionSecret": "troque-por-um-valor-aleatorio-tambem"
 }
