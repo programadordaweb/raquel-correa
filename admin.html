@@ -25,7 +25,13 @@
 
     <div class="booking-field">
       <label for="loginPassword">Senha</label>
-      <input type="password" id="loginPassword" name="loginPassword" required autocomplete="current-password">
+      <div class="password-field">
+        <input type="password" id="loginPassword" name="loginPassword" required autocomplete="current-password">
+        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Mostrar senha" aria-pressed="false">
+          <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true" hidden><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M3 3l18 18"/></svg>
+        </button>
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary btn-large" id="loginBtn">Entrar</button>

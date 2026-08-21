@@ -13,6 +13,41 @@
 .admin-login-title{ font-size:1.5rem; margin:0 0 6px; }
 .admin-login-card .btn{ margin-top:6px; }
 
+.password-field{ position:relative; display:flex; }
+.password-field input{ width:100%; padding-right:44px; }
+.password-toggle{
+  position:absolute; right:4px; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+  background:none; border:none; border-radius:3px; color:var(--ink-faint); cursor:pointer;
+  transition:color .2s var(--ease), background .2s var(--ease);
+}
+.password-toggle:hover{ color:var(--ink); background:var(--bg-soft); }
+.password-toggle svg{ width:19px; height:19px; }
+.password-toggle .icon-eye-off{ display:none; }
+.password-toggle.is-visible .icon-eye{ display:none; }
+.password-toggle.is-visible .icon-eye-off{ display:block; }
+
+.admin-login-card.is-shake{ animation:loginShake .4s var(--ease); }
+@keyframes loginShake{
+  0%,100%{ transform:translateX(0); }
+  20%{ transform:translateX(-8px); }
+  40%{ transform:translateX(7px); }
+  60%{ transform:translateX(-5px); }
+  80%{ transform:translateX(3px); }
+}
+
+.booking-message--error{
+  display:flex; align-items:center; gap:7px;
+  background:#fbeae8; color:#a13d3d; border:1px solid #f0c9c5;
+  border-radius:4px; padding:10px 12px; margin-top:2px;
+}
+.booking-message--error:empty{ display:none; border:none; padding:0; background:none; }
+.booking-message--error::before{
+  content:'!'; flex:none; width:16px; height:16px; border-radius:50%;
+  background:#a13d3d; color:#fff; font-size:.72rem; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+}
+
 /* ---------- Dashboard ---------- */
 .admin-dashboard{ min-height:100vh; }
 .admin-header{

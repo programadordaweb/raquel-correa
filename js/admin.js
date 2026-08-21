@@ -1,7 +1,10 @@
 const loginScreen = document.getElementById('loginScreen');
 const loginForm = document.getElementById('loginForm');
+const loginCard = document.querySelector('.admin-login-card');
 const loginMessage = document.getElementById('loginMessage');
 const loginBtn = document.getElementById('loginBtn');
+const loginPassword = document.getElementById('loginPassword');
+const passwordToggle = document.getElementById('passwordToggle');
 const dashboard = document.getElementById('dashboard');
 const logoutBtn = document.getElementById('logoutBtn');
 const apptList = document.getElementById('apptList');
@@ -43,13 +46,33 @@ function showDashboard() {
   startPolling();
 }
 
+passwordToggle.addEventListener('click', () => {
+  const showing = loginPassword.type === 'text';
+  loginPassword.type = showing ? 'password' : 'text';
+  passwordToggle.classList.toggle('is-visible', !showing);
+  passwordToggle.setAttribute('aria-pressed', String(!showing));
+  passwordToggle.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+  loginPassword.focus();
+});
+
+function showLoginError(text) {
+  loginMessage.textContent = text;
+  loginMessage.className = 'booking-message booking-message--error';
+  loginCard.classList.remove('is-shake');
+  // restart the animation even if it's already mid-shake from a previous attempt
+  void loginCard.offsetWidth;
+  loginCard.classList.add('is-shake');
+  loginPassword.focus();
+  loginPassword.select();
+}
+
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   loginMessage.textContent = '';
   loginBtn.disabled = true;
   loginBtn.textContent = 'Entrando…';
 
-  const password = document.getElementById('loginPassword').value;
+  const password = loginPassword.value;
 
   try {
     const res = await fetch('/api/admin/login', {
@@ -61,8 +84,7 @@ loginForm.addEventListener('submit', async (e) => {
     loginBtn.textContent = 'Entrar';
 
     if (!res.ok) {
-      loginMessage.textContent = 'Senha incorreta.';
-      loginMessage.className = 'booking-message booking-message--error';
+      showLoginError('Senha incorreta. Tente novamente.');
       return;
     }
     loginForm.reset();
@@ -70,8 +92,7 @@ loginForm.addEventListener('submit', async (e) => {
   } catch (err) {
     loginBtn.disabled = false;
     loginBtn.textContent = 'Entrar';
-    loginMessage.textContent = 'Não foi possível conectar ao servidor.';
-    loginMessage.className = 'booking-message booking-message--error';
+    showLoginError('Não foi possível conectar ao servidor.');
   }
 });
 
