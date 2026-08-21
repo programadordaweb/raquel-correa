@@ -7,20 +7,31 @@
 const { neon } = require('@neondatabase/serverless');
 const crypto = require('crypto');
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  process.env.POSTGRES_URL ||
-  process.env.DATABASE_URL_UNPOOLED;
-
-if (!connectionString) {
-  console.error('\nNenhuma variável de conexão com o Postgres encontrada (DATABASE_URL / POSTGRES_URL). Conecte um banco em Vercel > Storage.\n');
+// Lazily created — requiring this module must NEVER throw, even if the
+// database isn't connected yet, because on Vercel every request (including
+// plain page loads) routes through the same function. If neon() were
+// called eagerly at module-load time with a missing connection string, a
+// misconfigured/not-yet-connected database would crash the entire site,
+// not just the booking API.
+let sql = null;
+function getSql() {
+  if (!sql) {
+    const connectionString =
+      process.env.DATABASE_URL ||
+      process.env.POSTGRES_URL ||
+      process.env.DATABASE_URL_UNPOOLED;
+    if (!connectionString) {
+      throw new Error('Nenhuma variável de conexão com o Postgres encontrada (DATABASE_URL / POSTGRES_URL). Conecte um banco em Vercel > Storage e faça o redeploy.');
+    }
+    sql = neon(connectionString);
+  }
+  return sql;
 }
-
-const sql = neon(connectionString);
 
 let tableReady = null;
 function ensureTable() {
   if (!tableReady) {
+    const sql = getSql();
     tableReady = sql`
       CREATE TABLE IF NOT EXISTS appointments (
         id TEXT PRIMARY KEY,
