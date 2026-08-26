@@ -273,6 +273,12 @@ a:focus-visible, button:focus-visible{
 }
 .raquel-field-label{ font-size:.7rem; letter-spacing:.16em; color:var(--accent-dark); text-transform:uppercase; }
 .raquel-field-value{ font-family:var(--serif); font-style:italic; color:var(--ink-soft); font-size:1.05rem; }
+.badge-soon{
+  display:inline-block; margin-left:8px; padding:3px 10px;
+  font-family:var(--sans); font-style:normal; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent-dark); background:var(--bg); border:1px solid var(--line-soft); border-radius:20px;
+  filter:blur(1px); opacity:.82; vertical-align:middle;
+}
 
 /* ---------- Psicologia ---------- */
 .psico-grid{ display:grid; grid-template-columns:.5fr 1fr; gap:70px; align-items:center; }
