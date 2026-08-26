@@ -280,6 +280,33 @@ a:focus-visible, button:focus-visible{
   filter:blur(1px); opacity:.82; vertical-align:middle;
 }
 
+/* ---------- Nova especialização (em breve) ---------- */
+.section--soon{ background:var(--bg-soft); }
+.soon-container{ max-width:640px; }
+.soon-title{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.badge-soon--large{ font-size:.72rem; padding:6px 16px; letter-spacing:.14em; filter:blur(1.1px); }
+
+.soon-skeleton{
+  display:flex; flex-direction:column; gap:14px;
+  padding:34px 32px; margin-top:44px;
+  background:var(--white); border:1px solid var(--line-soft); border-radius:6px;
+  filter:blur(2.5px); opacity:.6; user-select:none;
+}
+.soon-skeleton-line{
+  width:var(--w); height:13px; border-radius:20px;
+  background:linear-gradient(90deg, var(--line-soft) 0%, var(--bg-soft-2) 50%, var(--line-soft) 100%);
+  background-size:200% 100%;
+  animation:soonShimmer 2.6s ease-in-out infinite;
+}
+.soon-skeleton-gap{ height:6px; }
+@keyframes soonShimmer{
+  0%{ background-position:200% 0; }
+  100%{ background-position:-200% 0; }
+}
+@media (prefers-reduced-motion: reduce){
+  .soon-skeleton-line{ animation:none; }
+}
+
 /* ---------- Psicologia ---------- */
 .psico-grid{ display:grid; grid-template-columns:.5fr 1fr; gap:70px; align-items:center; }
 .psico-illustration{ display:flex; justify-content:center; }
