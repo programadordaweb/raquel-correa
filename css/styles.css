@@ -263,7 +263,20 @@ a:focus-visible, button:focus-visible{
 }
 
 .raquel-block{ padding-top:20px; border-top:1px solid var(--line-soft); }
-.raquel-intro{ margin-bottom:46px; font-style:italic; }
+.raquel-intro{ margin-bottom:46px; }
+.raquel-intro .section-lead{ max-width:640px; margin:0 0 14px; }
+.raquel-intro .section-lead:last-child{ margin-bottom:0; }
+.raquel-field-item{ display:block; }
+.raquel-field-item + .raquel-field-item{ margin-top:6px; }
+.crp-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--sans); font-style:normal; font-size:.78rem; letter-spacing:.14em;
+  color:var(--accent-dark); background:var(--white);
+  border:1px solid var(--line); border-radius:20px; padding:6px 14px;
+}
+.crp-badge::before{
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--accent);
+}
 .raquel-fields{
   display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
   background:var(--line-soft); border:1px solid var(--line-soft);
